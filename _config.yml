@@ -14,22 +14,22 @@ timezone:
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: kio's blog # the main title
+title: Kio # the main title
 
-tagline: kio's blog # it will display as the sub-title
+tagline: Kio's Blog # it will display as the sub-title
 
 description: >- # used by seo meta and the atom feed
-  A minimal, responsive and feature-rich Jekyll theme for technical writing.
+  This is Kio's blog for writing technical documents and write-ups.
 
 # Fill in the protocol & hostname for your site.
 # e.g. 'https://username.github.io', note that it does not end with a '/'.
-url: ""
+url: "https://Kioreo.github.io"
 
 github:
   username: Kioreo # change to your github username
 
 twitter:
-  username: kio # change to your twitter username
+  username: kio_0207 # change to your twitter username
 
 social:
   # Change to your full name.
@@ -86,7 +86,7 @@ pageviews:
 #     light  - Use the light color scheme
 #     dark   - Use the dark color scheme
 #
-theme_mode: # [light | dark]
+theme_mode: dark # [light | dark]
 
 # The CDN endpoint for media resources.
 # Notice that once it is assigned, the CDN url
