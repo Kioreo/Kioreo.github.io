@@ -53,13 +53,15 @@ webmaster_verifications:
   baidu: # fill in your Baidu verification code
   facebook: # fill in your Facebook verification code
 
+google_site_verification: I40qEkua0r0Oh30sYXN8CzPTYAU0RcWLrpXZ4n048DE
+
 # ↑ --------------------------
 # The end of `jekyll-seo-tag` settings
 
 # Web Analytics Settings
 analytics:
   google:
-    id: # fill in your Google Analytics ID
+    id: I40qEkua0r0Oh30sYXN8CzPTYAU0RcWLrpXZ4n048DE
   goatcounter:
     id: # fill in your GoatCounter ID
   umami:
