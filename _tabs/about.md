@@ -14,6 +14,10 @@ order: 4
 - TeamH4C
 
 ## Achievement/Awards
+[2024]
+- 3rd, CCE, Cyber Conflict Exercise Final
+- Codegate 2024 Final
+
 [2023]
 - 1st, JBU CTF (Team. 칼을 숫돌로 가는게 취미에요)
 - 1st, Logcon CTF
@@ -32,11 +36,14 @@ order: 4
 - Nintendo Switch Game Vulnerability Analysis (BoB 12th)
 
 ## Education
-- Sunrin Internet High School SW 영재원 (2021.04 ~ 2022.11)
+- Sunrin Internet High School SW영재교육원 (2021.04 ~ 2022.11)
 - KITRI BoB 12th Vulnerability Analysis (2023.07 ~ 2024.03)
+- Seoul Women's University 정보보호영재교육원 (2024.05 ~ )
+
+# Contributions
+- 2024 KAIST-POSTECH Science War CTF Auther ([pokary](https://dreamhack.io/wargame/challenges/1519), [synergy](https://dreamhack.io/wargame/challenges/1518))
 
 ## Presentation
-
 [2024]
 - .HACK 2024 (Junior Session : A Journey from a game player to a game hacker)
 - 학생용 해킹노트 2024 (고등학생 보안인의 고민과 BoB에서 얻을 수 있는 것들)
