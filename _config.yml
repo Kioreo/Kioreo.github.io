@@ -9,14 +9,14 @@ theme: jekyll-theme-chirpy
 lang: en
 
 # Change to your timezone › https://kevinnovak.github.io/Time-Zone-Picker
-timezone:
+timezone: Asia/Seoul
 
 # jekyll-seo-tag settings › https://github.com/jekyll/jekyll-seo-tag/blob/master/docs/usage.md
 # ↓ --------------------------
 
-title: Kio # the main title
+title: kio # the main title
 
-tagline: Kio's Blog # it will display as the sub-title
+tagline: Kio's blog # it will display as the sub-title
 
 description: >- # used by seo meta and the atom feed
   This is Kio's blog for writing technical documents and write-ups.
@@ -26,7 +26,7 @@ description: >- # used by seo meta and the atom feed
 url: "https://Kioreo.github.io"
 
 github:
-  username: Kioreo # change to your github username
+  username: kioreo # change to your github username
 
 twitter:
   username: kio_0207 # change to your twitter username
@@ -34,11 +34,11 @@ twitter:
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
-  name: kio
+  name: Geonho Kim
   email: kio070207@gmail.com # change to your email address
   links:
     # The first element serves as the copyright owner's link
-    - https://twitter.com/kio_0207 # change to your twitter homepage
+    - https://x.com/kio_0207 # change to your twitter homepage
     - https://github.com/Kioreo # change to your github homepage
     # Uncomment below to add more social links
     # - https://www.facebook.com/username
@@ -46,14 +46,12 @@ social:
 
 # Site Verification Settings
 webmaster_verifications:
-  google:
+  google: # fill in your Google verification code
   bing: # fill in your Bing verification code
   alexa: # fill in your Alexa verification code
   yandex: # fill in your Yandex verification code
   baidu: # fill in your Baidu verification code
   facebook: # fill in your Facebook verification code
-
-google_site_verification: I40qEkua0r0Oh30sYXN8CzPTYAU0RcWLrpXZ4n048DE
 
 # ↑ --------------------------
 # The end of `jekyll-seo-tag` settings
@@ -61,7 +59,7 @@ google_site_verification: I40qEkua0r0Oh30sYXN8CzPTYAU0RcWLrpXZ4n048DE
 # Web Analytics Settings
 analytics:
   google:
-    id: 
+    id: # fill in your Google Analytics ID
   goatcounter:
     id: # fill in your GoatCounter ID
   umami:
@@ -88,7 +86,7 @@ pageviews:
 #     light  - Use the light color scheme
 #     dark   - Use the dark color scheme
 #
-theme_mode: dark # [light | dark]
+theme_mode: dark
 
 # The CDN endpoint for media resources.
 # Notice that once it is assigned, the CDN url
@@ -230,3 +228,5 @@ jekyll-archives:
 
 plugins:
   - jekyll-target-blank
+
+google_site_verification: I40qEkua0r0Oh30sYXN8CzPTYAU0RcWLrpXZ4n048DE
