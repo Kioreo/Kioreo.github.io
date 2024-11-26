@@ -5,17 +5,22 @@ order: 4
 ---
 
 ## Profile
-김건호 / kio - 2007.02.07
+Geonho Kim / kio - 2007.02.07
 
 ## Organization
 - Sunrin Internet High School InfoSec 118th
 - KITRI BoB 12th Vulnerability Analysis
 - Layer7 Hacking Club
 - TeamH4C
+- CCA Executive
 
 ## Achievement/Awards
 [2024]
-- 3rd, CCE, Cyber Conflict Exercise Final
+- 1st, KERIS Information Security Competition Final (Team. 팀원은 믿어야해요)
+- 2nd, KERIS Information Security Competition Quals
+- 3rd, CCE, Cyber Conflict Exercise Final (Team. 솜사탕은 씻어먹어요)
+- 3rd, Whitehat Conference (Team. 나야김건호근데수상을곁들인)
+- 3rd, Cyberguardians CTF (Team. 팀명을 정하는 순간 제가 무슨 생각을 했을까요)
 - Codegate 2024 Final
 
 [2023]
@@ -36,9 +41,9 @@ order: 4
 - Nintendo Switch Game Vulnerability Analysis (BoB 12th)
 
 ## Education
-- Sunrin Internet High School SW영재교육원 (2021.04 ~ 2022.11)
+- Sunrin Internet High School Education Institute for Gifted of SW (2021.04 ~ 2022.11)
 - KITRI BoB 12th Vulnerability Analysis (2023.07 ~ 2024.03)
-- Seoul Women's University 정보보호영재교육원 (2024.05 ~ )
+- Seoul Women's University Education Institute for Gifted of Information Security (2024.05 ~ 2024.11)
 
 # Contributions
 - 2024 KAIST-POSTECH Science War CTF Auther ([pokary](https://dreamhack.io/wargame/challenges/1519), [synergy](https://dreamhack.io/wargame/challenges/1518))
