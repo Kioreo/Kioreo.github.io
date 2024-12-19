@@ -13,8 +13,6 @@ The BabyQemu challenge was presented in the SECCON 2024. As you can sense from i
 
 In this challenge, the source code of a QEMU MMIO device is provided. The code includes implementations of MMIO handling functions such as `mmio_read` and `mmio_write`.
 
-<br>
-
 ```c
 #include "qemu/osdep.h"
 #include "hw/pci/pci_device.h"
@@ -157,8 +155,6 @@ static void pci_babydev_mmio_write(void *opaque, hwaddr addr, uint64_t val, unsi
 }
 ```
 
-<br>
-
 This baby device uses the `PCIBabyDevState` structure as its PIC device state.
 The device performs the following three operations through the MMIO-mapped region:
 
@@ -173,6 +169,8 @@ The vulnerability in this driver is caused by insufficient validation of `reg_mm
 > Since `max_access_size` is specified when defining `pci_babydev_mmio_ops`, even though the return value of `pci_babydev_mmio_read` is `uint64_t`, it should be parsed as `uint32_t`. Otherwise, a sign extension will occur during the read process, causing negative values to be returned.
 {: .prompt-tip }
 
+<br>
+
 ### Interact Qemu Device
 
 ```c
@@ -180,25 +178,23 @@ The vulnerability in this driver is caused by insufficient validation of `reg_mm
 #define BABY_PCI_DEVICE_ID 0x1338
 ```
 
-<br>
-
 The header file contains the `Vendor ID` and `Device ID` of the baby device.
 
-<br>
 
 ![Desktop View](/posts/20241219/lspci_output.png)_lspci output_
 
 In the output of the lspci command, you can find the PCI address 00:04.0, which is the same as the baby device information.
 Using this, you can identify the `resource0` file, which corresponds to the MMIO region allocated by `pci_baby_realize` within the PCI sysfs directory.
 
+<br>
 
 ### ops overwrite exploitation
+
+---
 
 The version of QEMU used in this challenge is `v9.1.0`. In this version, MMIO memory handling is performed through `memory_region_dispatch_read` and `memory_region_dispatch_write`.
 Both read and write operations first perform `memory_region_access_valid`, and then pass the `memory_region_[read or write]_accessor` function pointer to the `access_with_adjusted_size` function, which executes the read or write operation in `mr->ops`.
 For MMIO memory reads, the `memory_region_dispatch_read1` function is added in between.
-
-<br>
 
 ```c
 MemTxResult memory_region_dispatch_read1(MemoryRegion *mr,
@@ -235,13 +231,11 @@ MemTxResult memory_region_dispatch_write(MemoryRegion *mr,
 	// [...]
 }
 ```
-
 <br>
 
 One key aspect to note is the memory_region_access_valid function, which, as the name suggests, checks the validity of the accessed memory.
 This function checks and returns whether memory access is allowed when `valid.accepts` exists within the `MemoryRegionOps *ops` member variable of the `MemoryRegion` structure.
 So, When creating a `fake_vtable` to overwrite `ops`, it is not just the read and write operations that can be modified, but also the `valid.accepts` at `ops+0x38`, which can be leveraged for a ROP attack.
-
 <br>
 
 ```c
@@ -283,6 +277,9 @@ struct MemoryRegionOps {
 ## 0x02 Exploit
 
 ### Leak Pie, Heap and Libc
+
+---
+
 ```c
 int64_t read_mem(void *mem, int64_t offset){
     int64_t data;
@@ -306,12 +303,10 @@ uint64_t ops_addr = ms + 0xb30;
 
 uint64_t lb = read_mem(mem, (ms+8) - ms_buffer) - 0x5ad6f0;
 ```
-
 <br>
 
 In `pci_babydev_mmio_write`, when setting `reg->offset`, there is no validation, and since it is of type `int64_t`, the offset can be calculated from the `ms_buffer` to read the value of the desired memory.
 As a result, it is possible to leak memory addresses such as those of the `PIE`, `heap`, and `libc`.
-
 <br>
 
 ```c
@@ -339,7 +334,6 @@ void write_mem(void *mem, int64_t offset, uint64_t data, int size){
 
 	// [...]
 ```
-
 <br>
 
 To achieve the goal of a QEMU escape, we create a `fake_ops` and overwrite `mmio.ops` with `fake_ops` to gain a shell. The steps are as follows:
@@ -354,7 +348,6 @@ To achieve the goal of a QEMU escape, we create a `fake_ops` and overwrite `mmio
 
 > By collecting appropriate ROP gadgets, you can modify ops->valid.accepts and craft a ROP chain to achieve the desired outcome
 {: .prompt-tip }
-
 <br>
 
 Here is the full exploit:
