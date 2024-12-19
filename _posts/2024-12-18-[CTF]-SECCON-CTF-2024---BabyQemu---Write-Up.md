@@ -10,12 +10,12 @@ tags: [ctf, write-up]
 The BabyQemu challenge was presented in the SECCON 2024. As you can sense from its name, this challenge is designed to teach the basics of QEMU escape exploitation.
 
 ## 0x01 Analysis
+
 In this challenge, the source code of a QEMU MMIO device is provided. The code includes implementations of MMIO handling functions such as `mmio_read` and `mmio_write`.
 
-<details><summary>baby.c</summary>
+<br>
 
 ```c
-
 #include "qemu/osdep.h"
 #include "hw/pci/pci_device.h"
 #include "hw/qdev-properties.h"
@@ -155,10 +155,9 @@ static void pci_babydev_mmio_write(void *opaque, hwaddr addr, uint64_t val, unsi
 			break;
 	}
 }
-
 ```
 
-</details>
+<br>
 
 This baby device uses the `PCIBabyDevState` structure as its PIC device state.
 The device performs the following three operations through the MMIO-mapped region:
@@ -169,54 +168,37 @@ The device performs the following three operations through the MMIO-mapped regio
 
 The vulnerability in this driver is caused by insufficient validation of `reg_mmio->offset`, leading to `OOB` read and write operations when accessing `buffer[reg_mmio->offset]`.
 
+<br>
+
 > Since `max_access_size` is specified when defining `pci_babydev_mmio_ops`, even though the return value of `pci_babydev_mmio_read` is `uint64_t`, it should be parsed as `uint32_t`. Otherwise, a sign extension will occur during the read process, causing negative values to be returned.
 {: .prompt-tip }
 
-
 ### Interact Qemu Device
+
+```c
+#define BABY_PCI_VENDOR_ID 0x4296
+#define BABY_PCI_DEVICE_ID 0x1338
+```
+
+<br>
+
+The header file contains the `Vendor ID` and `Device ID` of the baby device.
+
+<br>
 
 ![Desktop View](/posts/20241219/lspci_output.png)_lspci output_
 
-The header file contains the `Vendor ID` and `Device ID` of the baby device.
 In the output of the lspci command, you can find the PCI address 00:04.0, which is the same as the baby device information.
 Using this, you can identify the `resource0` file, which corresponds to the MMIO region allocated by `pci_baby_realize` within the PCI sysfs directory.
 
-<details><summary>baby.h</summary>
-```c
-#ifndef HW_BABY_H
-#define HW_BABY_H
-
-#define TYPE_PCI_BABY_DEV "baby"
-
-#define BABY_PCI_VENDOR_ID 0x4296
-#define BABY_PCI_DEVICE_ID 0x1338
-
-struct PCIBabyDevReg {
-	off_t offset;
-	uint32_t data;
-};
-
-#define MMIO_SET_OFFSET    offsetof(struct PCIBabyDevReg, offset)
-#define MMIO_SET_DATA      offsetof(struct PCIBabyDevReg, data)
-#define MMIO_GET_DATA      offsetof(struct PCIBabyDevReg, data)
-
-// #define DEBUG_PCI_BABY_DEV
-
-#ifdef  DEBUG_PCI_BABY_DEV
-#define debug_printf(fmt, ...) printf("## (%3d) %-20s: " fmt, __LINE__, __func__, ## __VA_ARGS__)
-#else
-#define debug_printf(fmt, ...)
-#endif
-
-#endif
-```
-</details>
 
 ### ops overwrite exploitation
 
 The version of QEMU used in this challenge is `v9.1.0`. In this version, MMIO memory handling is performed through `memory_region_dispatch_read` and `memory_region_dispatch_write`.
 Both read and write operations first perform `memory_region_access_valid`, and then pass the `memory_region_[read or write]_accessor` function pointer to the `access_with_adjusted_size` function, which executes the read or write operation in `mr->ops`.
 For MMIO memory reads, the `memory_region_dispatch_read1` function is added in between.
+
+<br>
 
 ```c
 MemTxResult memory_region_dispatch_read1(MemoryRegion *mr,
@@ -254,24 +236,23 @@ MemTxResult memory_region_dispatch_write(MemoryRegion *mr,
 }
 ```
 
+<br>
+
 One key aspect to note is the memory_region_access_valid function, which, as the name suggests, checks the validity of the accessed memory.
 This function checks and returns whether memory access is allowed when `valid.accepts` exists within the `MemoryRegionOps *ops` member variable of the `MemoryRegion` structure.
 So, When creating a `fake_vtable` to overwrite `ops`, it is not just the read and write operations that can be modified, but also the `valid.accepts` at `ops+0x38`, which can be leveraged for a ROP attack.
 
+<br>
+
 ```c
 struct MemoryRegionOps {
-    /* Read from the memory region. @addr is relative to @mr; @size is
-     * in bytes. */
     uint64_t (*read)(void *opaque,
                      hwaddr addr,
                      unsigned size);
-    /* Write to the memory region. @addr is relative to @mr; @size is
-     * in bytes. */
     void (*write)(void *opaque,
                   hwaddr addr,
                   uint64_t data,
                   unsigned size);
-
     MemTxResult (*read_with_attrs)(void *opaque,
                                    hwaddr addr,
                                    uint64_t *data,
@@ -282,41 +263,18 @@ struct MemoryRegionOps {
                                     uint64_t data,
                                     unsigned size,
                                     MemTxAttrs attrs);
-
     enum device_endian endianness;
-    /* Guest-visible constraints: */
     struct {
-        /* If nonzero, specify bounds on access sizes beyond which a machine
-         * check is thrown.
-         */
         unsigned min_access_size;
         unsigned max_access_size;
-        /* If true, unaligned accesses are supported.  Otherwise unaligned
-         * accesses throw machine checks.
-         */
-         bool unaligned;
-        /*
-         * If present, and returns #false, the transaction is not accepted
-         * by the device (and results in machine dependent behaviour such
-         * as a machine check exception).
-         */
+        bool unaligned;
         bool (*accepts)(void *opaque, hwaddr addr,
                         unsigned size, bool is_write,
                         MemTxAttrs attrs);
     } valid;
-    /* Internal implementation constraints: */
     struct {
-        /* If nonzero, specifies the minimum size implemented.  Smaller sizes
-         * will be rounded upwards and a partial result will be returned.
-         */
         unsigned min_access_size;
-        /* If nonzero, specifies the maximum size implemented.  Larger sizes
-         * will be done as a series of accesses with smaller sizes.
-         */
         unsigned max_access_size;
-        /* If true, unaligned accesses are supported.  Otherwise all accesses
-         * are converted to (possibly multiple) naturally aligned accesses.
-         */
         bool unaligned;
     } impl;
 };
@@ -349,9 +307,12 @@ uint64_t ops_addr = ms + 0xb30;
 uint64_t lb = read_mem(mem, (ms+8) - ms_buffer) - 0x5ad6f0;
 ```
 
+<br>
+
 In `pci_babydev_mmio_write`, when setting `reg->offset`, there is no validation, and since it is of type `int64_t`, the offset can be calculated from the `ms_buffer` to read the value of the desired memory.
 As a result, it is possible to leak memory addresses such as those of the `PIE`, `heap`, and `libc`.
 
+<br>
 
 ```c
 void write_mem(void *mem, int64_t offset, uint64_t data, int size){
@@ -379,6 +340,8 @@ void write_mem(void *mem, int64_t offset, uint64_t data, int size){
 	// [...]
 ```
 
+<br>
+
 To achieve the goal of a QEMU escape, we create a `fake_ops` and overwrite `mmio.ops` with `fake_ops` to gain a shell. The steps are as follows:
 
 - Overwrite `mmio.ops` with the address of `fake_ops`.
@@ -387,9 +350,12 @@ To achieve the goal of a QEMU escape, we create a `fake_ops` and overwrite `mmio
 - Set `mmio.opaque` to point to the string `/bin/sh`.
     - When executing functions within `ops` like `mmio.ops->read`, `mmio.opaque` is passed as the rdi argument.
     - Therefore, we need to write the `/bin/sh` string somewhere on the heap and then modify `mmio.opaque` to point to it.
+<br>
 
 > By collecting appropriate ROP gadgets, you can modify ops->valid.accepts and craft a ROP chain to achieve the desired outcome
 {: .prompt-tip }
+
+<br>
 
 Here is the full exploit:
 
