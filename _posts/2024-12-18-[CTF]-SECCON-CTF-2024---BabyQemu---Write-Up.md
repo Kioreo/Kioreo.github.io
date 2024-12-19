@@ -15,6 +15,7 @@ In this challenge, the source code of a QEMU MMIO device is provided. The code i
 <details><summary>baby.c</summary>
 
 ```c
+
 #include "qemu/osdep.h"
 #include "hw/pci/pci_device.h"
 #include "hw/qdev-properties.h"
@@ -154,6 +155,7 @@ static void pci_babydev_mmio_write(void *opaque, hwaddr addr, uint64_t val, unsi
 			break;
 	}
 }
+
 ```
 
 </details>
@@ -180,7 +182,6 @@ In the output of the lspci command, you can find the PCI address 00:04.0, which 
 Using this, you can identify the `resource0` file, which corresponds to the MMIO region allocated by `pci_baby_realize` within the PCI sysfs directory.
 
 <details><summary>baby.h</summary>
-
 ```c
 #ifndef HW_BABY_H
 #define HW_BABY_H
@@ -209,7 +210,6 @@ struct PCIBabyDevReg {
 
 #endif
 ```
-
 </details>
 
 ### ops overwrite exploitation
