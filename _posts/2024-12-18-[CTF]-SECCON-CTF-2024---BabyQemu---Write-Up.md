@@ -173,6 +173,8 @@ The vulnerability in this driver is caused by insufficient validation of `reg_mm
 
 ### Interact Qemu Device
 
+---
+
 ```c
 #define BABY_PCI_VENDOR_ID 0x4296
 #define BABY_PCI_DEVICE_ID 0x1338
