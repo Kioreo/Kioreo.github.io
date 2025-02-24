@@ -62,3 +62,7 @@ Geonho Kim / 2007.02.07 (Republic of Korea)
 - .HACK 2024 (Junior Session : A Journey from a game player to a game hacker)
 - 학생용 해킹노트 2024 (고등학생 보안인의 고민과 BoB에서 얻을 수 있는 것들)
 - 해킹하는 부엉이들 2025 (레벨업하며 배우는 닌텐도 취약점 찾기기)
+
+## Contact
+Email : kio070207@gmail.com
+Discord : kio_0207 (kio)
