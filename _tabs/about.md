@@ -8,7 +8,7 @@ order: 4
 ---
 
 ## Profile
-Geonho Kim / 2007.02.07
+Geonho Kim / 2007.02.07 (Republic of Korea)
 
 
 ## Organization
