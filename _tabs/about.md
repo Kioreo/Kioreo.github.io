@@ -22,10 +22,10 @@ Geonho Kim / 2007.02.07
 [2024]
 - 1st, KERIS Information Security Competition Final (Team. 팀원은 믿어야해요)
 - 2nd, KERIS Information Security Competition Quals
+- 3rd, LG U+ Security Hackathon (Team. 현재 사용자의 국가 또는 지역에서 볼 수 없는 팀명입니다)
 - 3rd, CCE, Cyber Conflict Exercise Final (Team. 솜사탕은 씻어먹어요)
 - 3rd, Whitehat Conference (Team. 나야김건호근데수상을곁들인)
 - 3rd, UHCON, Ulsan Hacking Contest (Team. 건뽕)
-- 3rd, LG U+ Security Hackathon (Team. 현재 사용자의 국가 또는 지역에서 볼 수 없는 팀명입니다)
 - 3rd, Cyberguardians CTF (Team. 팀명을 정하는 순간 제가 무슨 생각을 했을까요)
 - Codegate 2024 Final
 
