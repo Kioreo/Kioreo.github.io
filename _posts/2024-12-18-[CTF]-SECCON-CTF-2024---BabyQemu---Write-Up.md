@@ -163,12 +163,10 @@ The device performs the following three operations through the MMIO-mapped regio
 - `MMIO_GET_DATA` : Reads a value from `buffer[reg_mmio->offset]`.
 
 The vulnerability in this driver is caused by insufficient validation of `reg_mmio->offset`, leading to `OOB` read and write operations when accessing `buffer[reg_mmio->offset]`.
-
 <br>
 
 > Since `max_access_size` is specified when defining `pci_babydev_mmio_ops`, even though the return value of `pci_babydev_mmio_read` is `uint64_t`, it should be parsed as `uint32_t`. Otherwise, a sign extension will occur during the read process, causing negative values to be returned.
 {: .prompt-tip }
-
 <br>
 
 ### Interact Qemu Device
@@ -187,7 +185,6 @@ The header file contains the `Vendor ID` and `Device ID` of the baby device.
 
 In the output of the lspci command, you can find the PCI address 00:04.0, which is the same as the baby device information.
 Using this, you can identify the `resource0` file, which corresponds to the MMIO region allocated by `pci_baby_realize` within the PCI sysfs directory.
-
 <br>
 
 ### ops overwrite exploitation
@@ -196,7 +193,7 @@ Using this, you can identify the `resource0` file, which corresponds to the MMIO
 
 The version of QEMU used in this challenge is `v9.1.0`. In this version, MMIO memory handling is performed through `memory_region_dispatch_read` and `memory_region_dispatch_write`.
 Both read and write operations first perform `memory_region_access_valid`, and then pass the `memory_region_[read or write]_accessor` function pointer to the `access_with_adjusted_size` function, which executes the read or write operation in `mr->ops`.
-For MMIO memory reads, the `memory_region_dispatch_read1` function is added in between.
+For MMIO memory reads, the `memory_region_dispatch_read1` function is added in between. <br>
 
 ```c
 MemTxResult memory_region_dispatch_read1(MemoryRegion *mr,
@@ -233,7 +230,6 @@ MemTxResult memory_region_dispatch_write(MemoryRegion *mr,
 	// [...]
 }
 ```
-<br>
 
 One key aspect to note is the memory_region_access_valid function, which, as the name suggests, checks the validity of the accessed memory.
 This function checks and returns whether memory access is allowed when `valid.accepts` exists within the `MemoryRegionOps *ops` member variable of the `MemoryRegion` structure.

@@ -4,15 +4,19 @@ icon: fas fa-info-circle
 order: 4
 ---
 
+# Kio
+---
+
 ## Profile
-Geonho Kim / kio - 2007.02.07
+Geonho Kim / 2007.02.07
+
 
 ## Organization
-- Sunrin Internet High School InfoSec 118th
-- KITRI BoB 12th Vulnerability Analysis
-- Layer7 Hacking Club
-- TeamH4C
+- Sunrin Internet High School InfoSec 118th (2023 ~ )
+- TeamH4C / C4C CTF Player
 - CCA Executive
+- Layer7 Hacking Club
+
 
 ## Achievement/Awards
 [2024]
@@ -40,17 +44,21 @@ Geonho Kim / kio - 2007.02.07
 - 3rd, SW 영재 창작대회
 
 ## Project
-- Nintendo Switch Game Vulnerability Analysis (BoB 12th)
+- [BoB 12th] Nintendo Switch Game Vulnerability Analysis (2023.10 ~ 2024.12)
+- Yealink IP Phone Vulnerability Analysis (2024.10 ~ 2024.12)
 
 ## Education
 - Sunrin Internet High School Education Institute for Gifted of SW (2021.04 ~ 2022.11)
 - KITRI BoB 12th Vulnerability Analysis (2023.07 ~ 2024.03)
 - Seoul Women's University Education Institute for Gifted of Information Security (2024.05 ~ 2024.11)
 
-# Contributions
+## Contributions
 - 2024 KAIST-POSTECH Science War CTF Auther ([pokary](https://dreamhack.io/wargame/challenges/1519), [synergy](https://dreamhack.io/wargame/challenges/1518))
+- 2024 LAYER7 CTF Auther
 
 ## Presentation
+
 [2024]
 - .HACK 2024 (Junior Session : A Journey from a game player to a game hacker)
 - 학생용 해킹노트 2024 (고등학생 보안인의 고민과 BoB에서 얻을 수 있는 것들)
+- 해킹하는 부엉이들 2025 (레벨업하며 배우는 닌텐도 취약점 찾기기)
