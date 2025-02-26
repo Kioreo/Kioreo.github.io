@@ -1,7 +1,7 @@
 ---
 title: "JSC Internals"
 date: 2024-12-19 13:00:00 +0900
-categories: [JSC, Webkit]
+categories: [Browser, Webkit, JSC]
 tags: [browser, note]
 ---
 
@@ -179,7 +179,7 @@ DFG performs key optimizations through static analysis of the generated graph. T
 3. **Clobberize**: Gathers aliasing information about DFG operations.
 
 
-> **Clobberize**</br> Clobberize is the alias analysis that the DFG uses to describe what parts of the program’s state an instruction could read and write. This allows us to see additional dependency edges between instructions beyond just the ones expressed as data flow. Clobberize has many clients in both the DFG and FTL.
+> **Clobberize**<br>Clobberize is the alias analysis that the DFG uses to describe what parts of the program’s state an instruction could read and write. This allows us to see additional dependency edges between instructions beyond just the ones expressed as data flow. Clobberize has many clients in both the DFG and FTL.
 {: .prompt-tip }
 
 The steps of DFG optimization are as follows:
