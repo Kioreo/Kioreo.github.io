@@ -1,6 +1,6 @@
 ---
 title: "JSC Internals"
-date: 2024-12-19 13:00:00 +0900
+date: 2025-02-24 13:00:00 +0900
 categories: [Browser, Webkit, JSC]
 tags: [browser, note]
 ---
