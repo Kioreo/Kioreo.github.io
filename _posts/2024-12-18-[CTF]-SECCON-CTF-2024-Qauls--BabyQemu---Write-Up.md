@@ -1,5 +1,5 @@
 ---
-title: "[CTF] SECCON CTF 2024 - BabyQemu - Write Up"
+title: "[CTF] SECCON CTF 2024 Quals - BabyQemu - Write Up"
 date: 2024-12-19 13:00:00 +0900
 categories: [CTF, SECCON]
 tags: [ctf, write-up]

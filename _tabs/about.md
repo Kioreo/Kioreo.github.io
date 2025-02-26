@@ -10,13 +10,11 @@ order: 4
 ## Profile
 Geonho Kim / 2007.02.07 (Republic of Korea)
 
-
 ## Organization
 - Sunrin Internet High School InfoSec 118th (2023 ~ )
 - TeamH4C / C4C CTF Player
 - CCA Executive
 - Layer7 Hacking Club
-
 
 ## Achievement/Awards
 [2024]
