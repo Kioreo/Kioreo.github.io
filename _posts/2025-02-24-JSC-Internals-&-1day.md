@@ -1,8 +1,8 @@
 ---
 title: "JSC Internals"
 date: 2024-12-19 13:00:00 +0900
-categories: [CTF, SECCON]
-tags: [ctf, write-up]
+categories: [JSC, Webkit]
+tags: [browser, note]
 ---
 
 ## 0x00 Overview
