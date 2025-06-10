@@ -4,17 +4,19 @@ icon: fas fa-info-circle
 order: 4
 ---
 
-# Kio
+# Kio (aka. Kioreo)
 ---
 
 ## Profile
 Geonho Kim / 2007.02.07 (Republic of Korea)
 
 ## Organization
-- Sunrin Internet High School InfoSec 118th (2023 ~ )
-- TeamH4C / C4C CTF Player
+- Project Sekai (2025.02 ~ )
 - CCA Executive
-- Layer7 Hacking Club
+- KITRI BoB 12th Vulnerability Analysis
+- Layer7 Hacking Club 23rd
+- Sunrin Internet High School InfoSec 118th (2023.03 ~ )
+- TeamH4C / C4C CTF Player (2023.12~2025.02)
 
 ## Achievement/Awards
 [2024]
@@ -42,7 +44,7 @@ Geonho Kim / 2007.02.07 (Republic of Korea)
 - 3rd, SW 영재 창작대회
 
 ## Project
-- [BoB 12th] Nintendo Switch Game Vulnerability Analysis (2023.10 ~ 2024.12)
+- [BoB 12th] Nintendo Switch Game Vulnerability Analysis (2023.10 ~ 2024.01)
 - Yealink IP Phone Vulnerability Analysis (2024.10 ~ 2024.12)
 
 ## Education
@@ -51,8 +53,8 @@ Geonho Kim / 2007.02.07 (Republic of Korea)
 - Seoul Women's University Education Institute for Gifted of Information Security (2024.05 ~ 2024.11)
 
 ## Contributions
-- 2024 KAIST-POSTECH Science War CTF Auther ([pokary](https://dreamhack.io/wargame/challenges/1519), [synergy](https://dreamhack.io/wargame/challenges/1518))
-- 2024 LAYER7 CTF Auther
+- 2024 KAIST-POSTECH Science War CTF Author ([pokary](https://dreamhack.io/wargame/challenges/1519), [synergy](https://dreamhack.io/wargame/challenges/1518))
+- 2024 LAYER7 CTF Author
 
 ## Presentation
 
@@ -62,5 +64,5 @@ Geonho Kim / 2007.02.07 (Republic of Korea)
 - 해킹하는 부엉이들 2025 (레벨업하며 배우는 닌텐도 취약점 찾기기)
 
 ## Contact
-Email : kio070207@gmail.com
+Email : kio070207@gmail.com</br>
 Discord : kio_0207 (kio)
