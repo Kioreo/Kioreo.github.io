@@ -8,17 +8,34 @@ order: 4
 ---
 
 ## Profile
-Geonho Kim / 2007.02.07 (Republic of Korea)
+Geonho Kim / 2007.02.07 / Republic of Korea
 
-## Organization
-- Project Sekai (2025.02 ~ )
-- CCA Executive
-- KITRI BoB 12th Vulnerability Analysis
-- Layer7 Hacking Club 23rd
-- Sunrin Internet High School InfoSec 118th (2023.03 ~ )
-- TeamH4C / C4C CTF Player (2023.12~2025.02)
+## Education
+### Formal Education
+- UNIST - B.S. (2026.02 ~ )
+- Sunrin Internet High School - Information Security (118th) (2023.03 ~ 2026.02)
 
-## Achievement/Awards
+### Programs
+- KITRI Best of the Best (BoB) 12th - Vulnerability Analysis Track (2023.07 ~ 2024.03)
+- Seoul Women’s University - Gifted Institute of Information Security (2024.05 ~ 2024.11)
+- Sunrin Internet High School - Gifted Institute of Software (2021.04 ~ 2022.11)
+
+## Experience
+- Project Sekai - Member (2025.02 ~ )
+- CCA - Executive (2024.08 ~ )
+- Layer7 Hacking Club - Member 23rd (2023.03 ~ 2026.02)
+- TeamH4C / C4C - CTF Player (2023.12 ~ 2025.02)
+
+## Honors & Awards
+[2025]
+- 1st, Whitehat Conference (Team. 꼬키오)
+- 1st, 2025 Army Cybersecurity Challenge (Team. 해킹그까이꺼)
+- 1st, Yeongnam Regional Cyber Defense Competition (Team. 꼬키오)
+- 2nd, Codegate jr 2025 Final
+- 2nd, CCE, Cyber Conflict Exercise Final (Team. 꼬키오)
+- 2nd, Cyberguardians CTF (Team. dakuo fanclub)
+- 3rd, Ajou University COSS (Team. 삼삼은구)
+
 [2024]
 - 1st, KERIS Information Security Competition Final (Team. 팀원은 믿어야해요)
 - 2nd, KERIS Information Security Competition Quals
@@ -43,26 +60,19 @@ Geonho Kim / 2007.02.07 (Republic of Korea)
 - 2nd, Layer7 CTF
 - 3rd, SW 영재 창작대회
 
-## Project
-- [BoB 12th] Nintendo Switch Game Vulnerability Analysis (2023.10 ~ 2024.01)
+## Projects
+- Nintendo Switch Game Vulnerability Analysis - BoB 12th Project (2023.10 ~ 2024.01)
 - Yealink IP Phone Vulnerability Analysis (2024.10 ~ 2024.12)
-
-## Education
-- Sunrin Internet High School Education Institute for Gifted of SW (2021.04 ~ 2022.11)
-- KITRI BoB 12th Vulnerability Analysis (2023.07 ~ 2024.03)
-- Seoul Women's University Education Institute for Gifted of Information Security (2024.05 ~ 2024.11)
 
 ## Contributions
 - 2024 KAIST-POSTECH Science War CTF Author ([pokary](https://dreamhack.io/wargame/challenges/1519), [synergy](https://dreamhack.io/wargame/challenges/1518))
 - 2024 LAYER7 CTF Author
 
-## Presentation
-
-[2024]
+## Talks & Presentations
+- 해킹하는 부엉이들 2025 (레벨업하며 배우는 닌텐도 취약점 찾기기)
 - .HACK 2024 (Junior Session : A Journey from a game player to a game hacker)
 - 학생용 해킹노트 2024 (고등학생 보안인의 고민과 BoB에서 얻을 수 있는 것들)
-- 해킹하는 부엉이들 2025 (레벨업하며 배우는 닌텐도 취약점 찾기기)
 
 ## Contact
-Email : kio070207@gmail.com</br>
+Email : kio070207@gmail.com </br>
 Discord : kio_0207 (kio)
