@@ -23,6 +23,8 @@ Geonho Kim / 2007.02.07 / Republic of Korea
 ## Experience
 - Project Sekai - Member (2025.02 ~ )
 - CCA - Executive (2024.08 ~ )
+- HSPACE - Security Research Practicum (2025.09 ~ 2025.12)
+- K-Bank (Confidential) - Penetration Testing (2025.09 ~ 2025.11)
 - Layer7 Hacking Club - Member 23rd (2023.03 ~ 2026.02)
 - TeamH4C / C4C - CTF Player (2023.12 ~ 2025.02)
 
