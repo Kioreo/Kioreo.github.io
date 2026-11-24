@@ -21,8 +21,19 @@ clock(); setInterval(clock, 1000);
 document.querySelectorAll(".tab").forEach(button => button.addEventListener("click", () => {
   document.querySelectorAll(".tab").forEach(node => node.classList.toggle("active", node === button));
   document.querySelectorAll(".view").forEach(node => node.classList.toggle("active", node.id === button.dataset.tab));
-  if (button.dataset.tab === "gnss") drawChart();
+  $("scene-preview-ransom").classList.toggle("active", button.dataset.tab === "ransomware");
+  $("scene-preview-gnss").classList.toggle("active", button.dataset.tab === "gnss");
+  if (button.dataset.tab === "gnss") requestAnimationFrame(drawChart);
 }));
+$("enter-console").addEventListener("click", () => {
+  document.body.classList.add("focus-mode");
+  window.scrollTo({top: 0, behavior: "instant"});
+  requestAnimationFrame(drawChart);
+});
+$("return-bridge").addEventListener("click", () => {
+  document.body.classList.remove("focus-mode");
+  window.scrollTo({top: 0, behavior: "instant"});
+});
 
 function renderFiles() {
   $("file-list").replaceChildren(...FILES.map(file => {
@@ -42,6 +53,7 @@ function renderFiles() {
   }));
 }
 function renderRansom() {
+  document.body.classList.toggle("ransom-infected", infected);
   renderFiles();
   $("ship-status").textContent = infected ? "● 주요 시스템 접근 차단" : "● 모든 시스템 정상";
   $("ship-status").className = `status ${infected ? "bad" : "good"}`;
@@ -57,9 +69,17 @@ function openFile(file) {
     infected = true; sessionStorage.setItem(LOCK_KEY, "locked"); renderRansom();
     showUnlock("항차계획 동기화 파일을 실행한 뒤 시스템이 잠겼습니다. 복구 비밀번호를 입력하세요.");
   } else {
-    $("ransom-event").textContent = `${file.name} 파일을 열었습니다. (교육용 가상 문서)`;
+    $("ransom-event").textContent = `${file.name} 파일을 열었습니다.`;
+    text("preview-title", file.name);
+    text("preview-content", file.type === "PDF"
+      ? "MV HSPACE EXPLORER  /  항차 운항 계획\n\n출항지     부산항\n예정 항로  동쪽 연안 항로\n계획 침로  090°\n계획 속력  10.0 kn\n항법 소스  GPS 1 / PRIMARY\n\n당직 항해사는 장비 위치와 실제 항적을 확인할 것."
+      : file.type === "XLSX"
+        ? "기관실 교대 점검표\n\n주기관 상태      정상\n발전기 부하      정상\n조타기 상태      정상\n통신 장비        정상\n\n마지막 점검: 당직 기관사"
+        : "ECDIS 해도 백업 패키지\n\n해도 데이터      준비됨\n백업 무결성       확인됨\n로컬 저장소      /ship/bridge/backup/\n\n선내 백업 파일입니다.");
+    $("file-preview-dialog").showModal();
   }
 }
+$("close-preview").addEventListener("click", () => $("file-preview-dialog").close());
 function showUnlock(context) {
   $("dialog-context").textContent = context;
   $("unlock-error").textContent = "";
@@ -117,6 +137,12 @@ function renderGNSS(state) {
   showFeedStatus(phase === "deviating" ? "실제 항로 이탈" : phase === "attack" ? "GNSS 변조 진행" : "정상 항해 중", phase === "deviating" ? "bad" : phase === "attack" ? "attack" : "good");
   text("source", source); text("xte", `${number(metric.actual_xte_m)} m`); text("bias", `${number(metric.gps_bias_m)} m`);
   text("heading", `${number(turn.heading_delta_since_attack_deg)}°`); text("rudder", `${number(turn.rudder_command_deg)}°`);
+  text("speed", number(state.navigation?.speed_over_ground_knots));
+  text("heading-absolute", number(turn.heading_deg));
+  text("rudder-actual", number(turn.rudder_actual_deg));
+  text("source-short", source.includes("aux") ? "GPS 2 / AUX" : source.includes("primary") ? "GPS 1 / PRIMARY" : source);
+  document.body.classList.toggle("gnss-alert", phase !== "baseline");
+  text("mini-nav-status", phase === "deviating" ? "GPS 2 · 실제 항로 이탈" : phase === "attack" ? "GPS 2 · 항법 변조" : "GPS 1 · 정상 항해");
   text("sample-time", `SAMPLE ${new Date(state.timestamp_ms || Date.now()).toLocaleTimeString("ko-KR", {hour12:false})}`);
   const steps = [...$("steps").children];
   const selectedAux = source.includes("aux");
@@ -126,37 +152,74 @@ function renderGNSS(state) {
   drawChart();
 }
 function point(p) { return p && Number.isFinite(Number(p.latitude)) && Number.isFinite(Number(p.longitude)) ? {lat:Number(p.latitude),lon:Number(p.longitude)} : null; }
+const chartTiles = new Map();
+function renderTiles(actual, scale, w, h) {
+  const layer = $("chart-tiles");
+  const latitude = actual.lat * Math.PI / 180;
+  const zoom = Math.max(13, Math.min(18, Math.round(Math.log2(156543.03392 * Math.cos(latitude) / scale))));
+  const world = 256 * 2 ** zoom;
+  const centerX = (actual.lon + 180) / 360 * world;
+  const centerY = (1 - Math.asinh(Math.tan(latitude)) / Math.PI) / 2 * world;
+  const tileMetersPerPixel = 156543.03392 * Math.cos(latitude) / 2 ** zoom;
+  const tileSize = 256 * tileMetersPerPixel / scale;
+  const left = w * .44, top = h * .53;
+  const minX = Math.floor((centerX - left * scale / tileMetersPerPixel) / 256);
+  const maxX = Math.ceil((centerX + (w-left) * scale / tileMetersPerPixel) / 256);
+  const minY = Math.floor((centerY - top * scale / tileMetersPerPixel) / 256);
+  const maxY = Math.ceil((centerY + (h-top) * scale / tileMetersPerPixel) / 256);
+  const needed = new Set();
+  for (let x = minX; x <= maxX; x++) for (let y = minY; y <= maxY; y++) {
+    if (x < 0 || y < 0 || x >= 2 ** zoom || y >= 2 ** zoom) continue;
+    const key = `${zoom}/${x}/${y}`; needed.add(key);
+    let img = chartTiles.get(key);
+    if (!img) {
+      img = document.createElement("img"); img.alt = ""; img.decoding = "async";
+      img.referrerPolicy = "strict-origin-when-cross-origin";
+      img.src = `https://tile.openstreetmap.org/${key}.png`;
+      layer.append(img); chartTiles.set(key, img);
+    }
+    img.style.left = `${left + (x*256-centerX) * tileMetersPerPixel / scale}px`;
+    img.style.top = `${top + (y*256-centerY) * tileMetersPerPixel / scale}px`;
+    img.style.width = `${tileSize+.5}px`;
+    img.style.height = `${tileSize+.5}px`;
+  }
+  for (const [key,img] of chartTiles) if (!needed.has(key)) { img.remove(); chartTiles.delete(key); }
+}
 function drawChart() {
   const canvas = $("chart"), box = canvas.getBoundingClientRect();
   if (!box.width || !box.height) return;
   const dpr = Math.min(devicePixelRatio || 1, 2); canvas.width = Math.round(box.width*dpr); canvas.height = Math.round(box.height*dpr);
   const ctx = canvas.getContext("2d"); ctx.scale(dpr,dpr);
   const w=box.width,h=box.height;
-  ctx.fillStyle="#0a2636"; ctx.fillRect(0,0,w,h);
-  ctx.strokeStyle="#1d485e"; ctx.lineWidth=1;
-  for(let x=0;x<w;x+=44){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
-  for(let y=0;y<h;y+=44){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
-  ctx.strokeStyle="#28667b";ctx.setLineDash([2,9]);
-  for(let x=22;x<w;x+=176){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
-  ctx.setLineDash([]);
+  ctx.clearRect(0,0,w,h);
   const state=currentState, actual=point(state?.positions?.actual || state?.actual_position);
   if(!actual) return;
+  const xte=Math.abs(Number(state?.metrics?.actual_xte_m)||0);
+  const scale=Math.max(2.7,xte/Math.max(h*.32,1));
+  renderTiles(actual,scale,w,h);
+  ctx.strokeStyle="#17475d77"; ctx.lineWidth=1;
+  for(let x=0;x<w;x+=44){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+  for(let y=0;y<h;y+=44){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
+  ctx.strokeStyle="#28667b99";ctx.setLineDash([2,9]);
+  for(let x=22;x<w;x+=176){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}
+  ctx.setLineDash([]);
+  ctx.strokeStyle="#0c526baa";ctx.lineWidth=1;ctx.setLineDash([3,5]);
+  for(const radius of [185,370]) {ctx.beginPath();ctx.arc(w*.44,h*.53,radius/scale,0,Math.PI*2);ctx.stroke()}
+  ctx.setLineDash([]);
   const report=point(state?.positions?.reported || state?.reported_position);
   const cos=Math.cos(actual.lat*Math.PI/180);
   const toM=p=>({x:(p.lon-actual.lon)*111320*cos,y:(p.lat-actual.lat)*111320});
-  const xte=Math.abs(Number(state?.metrics?.actual_xte_m)||0);
-  const scale=Math.max(1.05,xte/Math.max(h*.32,1));
   const px=p=>({x:w*.44+p.x/scale,y:h*.53-p.y/scale});
   const line=(points,color,width,dash=[])=>{if(points.length<2)return;ctx.beginPath();points.forEach((p,i)=>{const q=px(p);i?ctx.lineTo(q.x,q.y):ctx.moveTo(q.x,q.y)});ctx.strokeStyle=color;ctx.lineWidth=width;ctx.setLineDash(dash);ctx.stroke();ctx.setLineDash([])};
   const route=state.route || {},start=point(route.start),way=point(route.waypoint);
-  if(start&&way){const a=toM(start),b=toM(way),vx=b.x-a.x,vy=b.y-a.y,l=Math.hypot(vx,vy)||1,ux=vx/l,uy=vy/l,t=-(a.x*ux+a.y*uy);line([{x:a.x+(t-2000)*ux,y:a.y+(t-2000)*uy},{x:a.x+(t+2000)*ux,y:a.y+(t+2000)*uy}],"#48b6fa",3,[12,9]);}
+  if(start&&way){const a=toM(start),b=toM(way),vx=b.x-a.x,vy=b.y-a.y,l=Math.hypot(vx,vy)||1,ux=vx/l,uy=vy/l,t=-(a.x*ux+a.y*uy);line([{x:a.x+(t-2000)*ux,y:a.y+(t-2000)*uy},{x:a.x+(t+2000)*ux,y:a.y+(t+2000)*uy}],"#0e86dc",4,[12,8]);}
   const track=(state.actual_track||[]).map(point).filter(Boolean).map(toM).filter(p=>Math.abs(p.x)<w*scale*1.5&&Math.abs(p.y)<h*scale*1.5);
-  line(track,"#35debe",3);
-  if(report){const r=toM(report);if(Math.hypot(r.x,r.y)>2){line([{x:0,y:0},r],"#f5b75d",1.5,[4,6]);const q=px(r);ctx.strokeStyle="#f5b75d";ctx.lineWidth=2;ctx.beginPath();ctx.arc(q.x,q.y,9,0,Math.PI*2);ctx.stroke();ctx.fillStyle="#f5b75d";ctx.font="10px ui-monospace, monospace";ctx.fillText("GNSS",q.x+13,q.y-8);}}
+  line(track,"#02da91",4);
+  if(report){const r=toM(report);if(Math.hypot(r.x,r.y)>2){line([{x:0,y:0},r],"#e97620",2,[4,6]);const q=px(r);ctx.strokeStyle="#e97620";ctx.lineWidth=3;ctx.beginPath();ctx.arc(q.x,q.y,9,0,Math.PI*2);ctx.stroke();ctx.fillStyle="#6a2816";ctx.fillRect(q.x+9,q.y-23,47,17);ctx.fillStyle="#fff3e6";ctx.font="bold 10px ui-monospace, monospace";ctx.fillText("GNSS",q.x+13,q.y-11);}}
   const ship=px({x:0,y:0});const heading=Number(state?.turn_effect?.heading_deg ?? state?.physics?.heading ?? 90)*Math.PI/180;
-  ctx.save();ctx.translate(ship.x,ship.y);ctx.rotate(heading);ctx.fillStyle="#35debe";ctx.shadowColor="#35debe";ctx.shadowBlur=19;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(11,14);ctx.lineTo(0,7);ctx.lineTo(-11,14);ctx.closePath();ctx.fill();ctx.restore();
-  ctx.fillStyle="#d3f8ed";ctx.font="11px ui-monospace, monospace";ctx.fillText("ACTUAL SHIP",ship.x+18,ship.y+20);
-  ctx.fillStyle="#5e99ae";ctx.font="10px ui-monospace, monospace";ctx.fillText(`${actual.lat.toFixed(6)}° N  ${actual.lon.toFixed(6)}° E`,w-235,h-21);
+  ctx.save();ctx.translate(ship.x,ship.y);ctx.rotate(heading);ctx.fillStyle="#00e59b";ctx.strokeStyle="#06393a";ctx.lineWidth=2;ctx.shadowColor="#02ffad";ctx.shadowBlur=17;ctx.beginPath();ctx.moveTo(0,-18);ctx.lineTo(11,14);ctx.lineTo(0,7);ctx.lineTo(-11,14);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+  ctx.fillStyle="#092b32dd";ctx.fillRect(ship.x+17,ship.y+5,92,20);ctx.fillStyle="#e7fff3";ctx.font="bold 11px ui-monospace, monospace";ctx.fillText("실제 선체",ship.x+22,ship.y+19);
+  ctx.fillStyle="#08242ddd";ctx.fillRect(w-245,h-33,238,25);ctx.fillStyle="#d6f6f1";ctx.font="10px ui-monospace, monospace";ctx.fillText(`${actual.lat.toFixed(6)}° N  ${actual.lon.toFixed(6)}° E`,w-235,h-17);
 }
 new ResizeObserver(drawChart).observe($("chart"));
 
