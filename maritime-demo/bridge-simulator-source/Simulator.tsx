@@ -16,7 +16,7 @@ type LabState = {
   turn_effect?: { heading_deg?: number; rudder_actual_deg?: number };
   metrics?: { actual_xte_m?: number };
 };
-const LOCK_KEY = 'hspace-bridge-simulator-lock';
+const LOCK_KEY = 'hspace-maritime-ransomware-v1';
 const PASSWORD_DIGEST = '0e1d1e8830347f97aa6323eb5a1f56b12a2df5af87dab59bf15be773bd3a6bfb';
 async function validRecoveryKey(key: string): Promise<boolean> {
   const bytes = new TextEncoder().encode(key);
@@ -427,9 +427,11 @@ export default function Home() {
   const timers = useRef<number[]>([]);
   const overviewUrl = new URL('../', location.href);
   const gnssUrl = new URL('../', location.href);
+  const workstationUrl = new URL('../', location.href);
   gnssUrl.searchParams.set('view', 'gnss');
+  workstationUrl.searchParams.set('view', 'workstation');
   const requestedFeed = new URLSearchParams(location.search).get('feed');
-  if (requestedFeed) { overviewUrl.searchParams.set('feed', requestedFeed); gnssUrl.searchParams.set('feed', requestedFeed); }
+  if (requestedFeed) { overviewUrl.searchParams.set('feed', requestedFeed); gnssUrl.searchParams.set('feed', requestedFeed); workstationUrl.searchParams.set('feed', requestedFeed); }
 
   const stopSequence = useCallback(() => {
     timers.current.forEach(window.clearTimeout);
@@ -550,7 +552,7 @@ export default function Home() {
         <time>{clockText} KST</time>
       </header>
 
-      <nav className="sim-nav" aria-label="시연 이동"><a href={overviewUrl.href}>시연 시작 화면</a><a href={gnssUrl.href}>GNSS 전자해도</a></nav>
+      <nav className="sim-nav" aria-label="시연 이동"><a href={overviewUrl.href}>시연 시작 화면</a><a href={workstationUrl.href}>선내 PC 문서함</a><a href={gnssUrl.href}>GNSS 전자해도</a></nav>
       <div className={`lab-readout ${lab?.selected_source?.includes('aux') ? 'affected' : ''}`} aria-live="polite">
         <span>{lab ? 'LIVE GNSS LAB' : 'GNSS LAB STANDBY'}</span>
         <b>{lab?.selected_source?.includes('aux') ? 'GPS 2 · AUX' : lab ? 'GPS 1 · PRIMARY' : 'FEED DISCONNECTED'}</b>

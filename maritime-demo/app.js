@@ -46,6 +46,9 @@ $("enter-console").addEventListener("click", () => {
   requestAnimationFrame(drawChart);
 });
 $("return-bridge").addEventListener("click", () => {
+  if (new URLSearchParams(location.search).get("view") === "workstation") {
+    location.assign(simulatorUrl()); return;
+  }
   document.body.classList.remove("focus-mode");
   window.scrollTo({top: 0, behavior: "instant"});
 });
