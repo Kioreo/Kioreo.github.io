@@ -24,6 +24,12 @@ function simulatorUrl() {
   if (feed) url.searchParams.set("feed", feed);
   return url.href;
 }
+function gnssSimulatorUrl() {
+  const url = new URL("gnss-simulator/", location.href);
+  const feed = new URLSearchParams(location.search).get("feed");
+  if (feed) url.searchParams.set("feed", feed);
+  return url.href;
+}
 function selectTab(button) {
   document.querySelectorAll(".tab").forEach(node => node.classList.toggle("active", node === button));
   document.querySelectorAll(".view").forEach(node => node.classList.toggle("active", node.id === button.dataset.tab));
@@ -35,11 +41,17 @@ document.querySelectorAll(".tab").forEach(button => button.addEventListener("cli
   if (document.body.classList.contains("focus-mode") && button.dataset.tab === "ransomware") {
     location.assign(simulatorUrl()); return;
   }
+  if (document.body.classList.contains("focus-mode") && button.dataset.tab === "gnss") {
+    location.assign(gnssSimulatorUrl()); return;
+  }
   selectTab(button);
 }));
 $("enter-console").addEventListener("click", () => {
   if (document.querySelector(".tab.active")?.dataset.tab === "ransomware") {
     location.assign(simulatorUrl()); return;
+  }
+  if (document.querySelector(".tab.active")?.dataset.tab === "gnss") {
+    location.assign(gnssSimulatorUrl()); return;
   }
   document.body.classList.add("focus-mode");
   window.scrollTo({top: 0, behavior: "instant"});
@@ -53,8 +65,9 @@ $("return-bridge").addEventListener("click", () => {
   window.scrollTo({top: 0, behavior: "instant"});
 });
 const requestedView = new URLSearchParams(location.search).get("view");
-if (requestedView === "gnss" || requestedView === "workstation") {
-  selectTab(document.querySelector(`.tab[data-tab="${requestedView === "gnss" ? "gnss" : "ransomware"}"]`));
+if (requestedView === "gnss") location.replace(gnssSimulatorUrl());
+if (requestedView === "workstation") {
+  selectTab(document.querySelector('.tab[data-tab="ransomware"]'));
   document.body.classList.add("focus-mode");
   requestAnimationFrame(drawChart);
 }

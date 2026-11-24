@@ -426,9 +426,8 @@ export default function Home() {
   const [lab, setLab] = useState<LabState | null>(null);
   const timers = useRef<number[]>([]);
   const overviewUrl = new URL('../', location.href);
-  const gnssUrl = new URL('../', location.href);
+  const gnssUrl = new URL('../gnss-simulator/', location.href);
   const workstationUrl = new URL('../', location.href);
-  gnssUrl.searchParams.set('view', 'gnss');
   workstationUrl.searchParams.set('view', 'workstation');
   const requestedFeed = new URLSearchParams(location.search).get('feed');
   if (requestedFeed) { overviewUrl.searchParams.set('feed', requestedFeed); gnssUrl.searchParams.set('feed', requestedFeed); workstationUrl.searchParams.set('feed', requestedFeed); }
