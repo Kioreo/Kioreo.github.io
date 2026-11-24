@@ -19,13 +19,13 @@ let feedError = "";
 function clock() { $("clock").textContent = new Date().toLocaleTimeString("ko-KR", { hour12: false }); }
 clock(); setInterval(clock, 1000);
 function simulatorUrl() {
-  const url = new URL("bridge-simulator/", location.href);
+  const url = new URL("bridge-simulator/index.html", location.protocol === "file:" ? "http://127.0.0.1:18091/" : location.href);
   const feed = new URLSearchParams(location.search).get("feed");
   if (feed) url.searchParams.set("feed", feed);
   return url.href;
 }
 function gnssSimulatorUrl() {
-  const url = new URL("gnss-simulator/", location.href);
+  const url = new URL("gnss-simulator/index.html", location.protocol === "file:" ? "http://127.0.0.1:18091/" : location.href);
   const feed = new URLSearchParams(location.search).get("feed");
   if (feed) url.searchParams.set("feed", feed);
   return url.href;

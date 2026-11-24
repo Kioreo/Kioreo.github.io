@@ -12,8 +12,8 @@ export default function Header({ state, connected, stale, error, onFollow, follo
   const source = String(state?.selected_source || 'gps-primary.GP');
   const aux = source.includes('gps-aux');
   const stage = Math.max(0, Math.min(3, Number(state?.attack_chain?.current_stage ?? 0)));
-  const bridge = new URL('../bridge-simulator/', location.href);
-  const landing = new URL('../', location.href);
+  const bridge = new URL('../bridge-simulator/index.html', location.href);
+  const landing = new URL('../index.html', location.href);
   const feed = new URLSearchParams(location.search).get('feed');
   if (feed) { bridge.searchParams.set('feed', feed); landing.searchParams.set('feed', feed); }
   return <header className="range-navbar">
