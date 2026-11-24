@@ -8,7 +8,7 @@ const FILES = [
   { name: "항차계획_동기화.exe", type: "EXE", detail: "육상 운항센터 전달 · 실행 파일", icon: "⬡", featured: true },
   { name: "선내_안전관리_절차.pdf", type: "PDF", detail: "안전 관리 · 1.1 MB", icon: "▣" },
 ];
-const LOCK_KEY = "hspace-maritime-ransomware-v1";
+const LOCK_KEY = "maritime-incident-lock-v2";
 const PASSWORD_DIGEST = "0e1d1e8830347f97aa6323eb5a1f56b12a2df5af87dab59bf15be773bd3a6bfb";
 const PASSWORD_FALLBACK = 0x187b2713;
 let infected = sessionStorage.getItem(LOCK_KEY) === "locked";

@@ -16,7 +16,7 @@ type LabState = {
   turn_effect?: { heading_deg?: number; rudder_actual_deg?: number };
   metrics?: { actual_xte_m?: number };
 };
-const LOCK_KEY = 'hspace-maritime-ransomware-v1';
+const LOCK_KEY = 'maritime-incident-lock-v2';
 const PASSWORD_DIGEST = '0e1d1e8830347f97aa6323eb5a1f56b12a2df5af87dab59bf15be773bd3a6bfb';
 async function validRecoveryKey(key: string): Promise<boolean> {
   const bytes = new TextEncoder().encode(key);
