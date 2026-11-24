@@ -18,14 +18,29 @@ let feedError = "";
 
 function clock() { $("clock").textContent = new Date().toLocaleTimeString("ko-KR", { hour12: false }); }
 clock(); setInterval(clock, 1000);
-document.querySelectorAll(".tab").forEach(button => button.addEventListener("click", () => {
+function simulatorUrl() {
+  const url = new URL("bridge-simulator/", location.href);
+  const feed = new URLSearchParams(location.search).get("feed");
+  if (feed) url.searchParams.set("feed", feed);
+  return url.href;
+}
+function selectTab(button) {
   document.querySelectorAll(".tab").forEach(node => node.classList.toggle("active", node === button));
   document.querySelectorAll(".view").forEach(node => node.classList.toggle("active", node.id === button.dataset.tab));
   $("scene-preview-ransom").classList.toggle("active", button.dataset.tab === "ransomware");
   $("scene-preview-gnss").classList.toggle("active", button.dataset.tab === "gnss");
   if (button.dataset.tab === "gnss") requestAnimationFrame(drawChart);
+}
+document.querySelectorAll(".tab").forEach(button => button.addEventListener("click", () => {
+  if (document.body.classList.contains("focus-mode") && button.dataset.tab === "ransomware") {
+    location.assign(simulatorUrl()); return;
+  }
+  selectTab(button);
 }));
 $("enter-console").addEventListener("click", () => {
+  if (document.querySelector(".tab.active")?.dataset.tab === "ransomware") {
+    location.assign(simulatorUrl()); return;
+  }
   document.body.classList.add("focus-mode");
   window.scrollTo({top: 0, behavior: "instant"});
   requestAnimationFrame(drawChart);
@@ -34,6 +49,12 @@ $("return-bridge").addEventListener("click", () => {
   document.body.classList.remove("focus-mode");
   window.scrollTo({top: 0, behavior: "instant"});
 });
+const requestedView = new URLSearchParams(location.search).get("view");
+if (requestedView === "gnss" || requestedView === "workstation") {
+  selectTab(document.querySelector(`.tab[data-tab="${requestedView === "gnss" ? "gnss" : "ransomware"}"]`));
+  document.body.classList.add("focus-mode");
+  requestAnimationFrame(drawChart);
+}
 
 function renderFiles() {
   $("file-list").replaceChildren(...FILES.map(file => {
