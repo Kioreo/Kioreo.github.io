@@ -1,7 +1,7 @@
 // Directly based on RMA-Naval-Cyber-Range gui_attack/src/Map.tsx and Ship.tsx (AGPL-3.0).
 // The RMA WebSocket NMEA source is replaced with this lab's read-only /api/state feed.
 import L, { LatLngExpression } from 'leaflet';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { CircleMarker, MapContainer, Marker, Polyline, TileLayer, Tooltip, useMap } from 'react-leaflet';
 import { LabState, Position, asNumber, toLatLng } from './types';
 
@@ -27,13 +27,20 @@ function ownShipIcon(heading: number): L.DivIcon {
   });
 }
 
-function FollowOwnShip({ position, enabled, token }: { position: [number, number]; enabled: boolean; token: number }) {
+function FollowOwnShip({ position, enabled, token, overviewStart }: { position: [number, number]; enabled: boolean; token: number; overviewStart: [number, number] | null }) {
   const map = useMap();
   const latitude = position[0];
   const longitude = position[1];
+  const startLat = overviewStart?.[0];
+  const startLon = overviewStart?.[1];
   useEffect(() => {
-    if (enabled) map.setView([latitude, longitude], map.getZoom(), { animate: false });
-  }, [enabled, latitude, longitude, map, token]);
+    if (!enabled) return;
+    if (startLat !== undefined && startLon !== undefined) {
+      map.fitBounds([[startLat, startLon], [latitude, longitude]], { padding: [70, 70], maxZoom: 12, animate: false });
+    } else {
+      map.setView([latitude, longitude], 14, { animate: false });
+    }
+  }, [enabled, latitude, longitude, startLat, startLon, map, token]);
   return null;
 }
 
@@ -63,6 +70,7 @@ interface MapProps {
 }
 
 export default function Map({ state, following, followToken }: MapProps) {
+  const [mapTilesFailed, setMapTilesFailed] = useState(false);
   const actual = toLatLng(state?.positions?.actual || state?.actual_position) || [35.1, 129.13] as [number, number];
   const selected = toLatLng(state?.positions?.perceived || state?.perceived_position || state?.reported_position);
   const heading = asNumber(state?.physics?.heading ?? state?.autopilot?.heading_deg) ?? 0;
@@ -78,6 +86,11 @@ export default function Map({ state, following, followToken }: MapProps) {
   if (!fallbackPlan.current) fallbackPlan.current = { origin: actual, bearing: desired };
   const routeStart = toLatLng(state?.route?.start);
   const routeWaypoint = toLatLng(state?.route?.waypoint);
+  const routeDistanceKm = routeStart ? Math.hypot(
+    (actual[0] - routeStart[0]) * 111.32,
+    (actual[1] - routeStart[1]) * 111.32 * Math.cos(actual[0] * Math.PI / 180),
+  ) : 0;
+  const showCoastContext = Boolean(routeStart && routeWaypoint && !auxSelected && !carryActive && routeDistanceKm > 5);
   const plannedOrigin = routeStart || fallbackPlan.current.origin;
   const plannedBearing = routeStart && routeWaypoint
     ? bearingBetween(routeStart, routeWaypoint)
@@ -98,12 +111,13 @@ export default function Map({ state, following, followToken }: MapProps) {
         <TileLayer
           attribution='&copy; OpenStreetMap contributors'
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          eventHandlers={{ tileerror: () => setMapTilesFailed(true), tileload: () => setMapTilesFailed(false) }}
         />
         <TileLayer
           attribution='&copy; OpenSeaMap contributors'
           url="https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
         />
-        <FollowOwnShip position={actual} enabled={following} token={followToken} />
+        <FollowOwnShip position={actual} enabled={following} token={followToken} overviewStart={showCoastContext ? routeStart : null} />
         <Polyline positions={plannedCourse} pathOptions={{ color: '#36b9ff', weight: 2, dashArray: '10 8', opacity: 0.92 }} />
         {actualTrack.length > 1 && <Polyline positions={actualTrack} pathOptions={{ color: '#20f3a2', weight: 4, opacity: 0.9 }} />}
         {auxSelected && reportedTrack.length > 1 && <Polyline positions={reportedTrack} pathOptions={{ color: '#ffb541', weight: 3, dashArray: '5 7', opacity: 0.95 }} />}
@@ -133,6 +147,8 @@ export default function Map({ state, following, followToken }: MapProps) {
         <span><i className="actual" />실제 항적</span>
         <span><i className="selected" />장비 사용 위치</span>
       </div>
+      {showCoastContext && <aside className="map-journey-note">항로 전체 보기 · 출발점에서 {routeDistanceKm.toFixed(0)} km 항해</aside>}
+      {mapTilesFailed && <div className="map-tile-warning">지도 타일 연결 대기 중 · 선박 위치와 계기는 계속 표시됩니다.</div>}
       <div className={`map-phase ${auxSelected ? 'affected' : carryActive ? 'injection' : ''}`}>
         <small>{auxSelected ? 'POSITION INTEGRITY LOST' : carryActive ? 'UNSELECTED GPS 2 INPUT ACTIVE' : 'POSITION INTEGRITY NORMAL'}</small>
         <b>{auxSelected ? 'GPS 2 데이터로 조타 계산 중' : carryActive ? 'GPS 2는 조작 중 · 장비는 GPS 1 사용' : '실제 위치와 장비 위치 일치'}</b>

@@ -489,3 +489,6 @@ button.nav-chip:hover, .nav-chip.active { border-color: var(--cyan); color: var(
 .position-compare div{display:flex;justify-content:space-between;gap:5px;padding:5px 0;border-top:1px solid #28434e}.position-compare div span{font-size:10px;color:#91b4be}.position-compare div b{font:11px Consolas,monospace;white-space:nowrap}
 .position-compare p{display:flex;justify-content:space-between;margin:5px 0 0;padding-top:7px;border-top:1px solid #31505c;font-size:10px}.position-compare p strong{color:#20f3a2;font:700 13px Consolas,monospace}.position-compare p.affected strong{color:#ff455b}
 @media(max-width:820px){.position-compare{margin-top:0}.position-compare div{font-size:10px}}
+.map-journey-note{position:absolute;z-index:650;right:14px;bottom:14px;padding:8px 11px;border:1px solid #3a6d79;background:#071b22e8;box-shadow:0 7px 20px #00141b99;color:#dff5f7;font-size:11px}
+.map-tile-warning{position:absolute;z-index:700;top:68px;left:14px;padding:6px 10px;border:1px solid #a67a37;background:#28200dcc;color:#f7d08c;font-size:11px}
+@media(max-width:820px){.map-journey-note{right:8px;bottom:43px;left:8px;text-align:center;font-size:9px}.map-tile-warning{top:76px;left:8px;right:8px;font-size:9px}}
