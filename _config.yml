@@ -213,6 +213,8 @@ exclude:
   - docs
   - tools
   - README.md
+  - maritime-demo/bridge-simulator-source/index.html
+  - maritime-demo/gnss-simulator-source/index.html
   - LICENSE
   - "*.config.js"
   - package*.json
