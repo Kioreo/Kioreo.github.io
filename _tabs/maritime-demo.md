@@ -2,6 +2,7 @@
 title: Maritime Demo
 icon: fas fa-ship
 order: 5
+permalink: /ship-demo/
 ---
 
 # 선박 사이버 시연
