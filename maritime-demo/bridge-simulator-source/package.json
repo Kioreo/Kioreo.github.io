@@ -1,0 +1,22 @@
+{
+  "name": "maritime-bridge-simulator",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build && cp public/window-mask.svg ../bridge-simulator/assets/window-mask.svg"
+  },
+  "dependencies": {
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "three": "0.185.0",
+    "lucide-react": "0.468.0"
+  },
+  "devDependencies": {
+    "vite": "6.4.1",
+    "typescript": "5.9.3",
+    "@vitejs/plugin-react": "4.7.0",
+    "@types/react": "19.2.6",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "0.185.0"
+  }
+}
